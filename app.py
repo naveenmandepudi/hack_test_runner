@@ -9,8 +9,8 @@ app = Flask(__name__)
 
 # Celery configuration
 
-app.config['CELERY_BROKER_URL'] = os.getenv('BROKER_URL', 'redis://localhost:6379/0')
-app.config['CELERY_RESULT_BACKEND'] = os.getenv('BROKER_URL', 'redis://localhost:6379/0')
+app.config['CELERY_BROKER_URL'] = os.getenv('REDISCLOUD_URL', 'redis://localhost:6379/0')
+app.config['CELERY_RESULT_BACKEND'] = os.getenv('REDISCLOUD_URL', 'redis://localhost:6379/0')
 
 # Initialize Celery
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], include=['app'])
@@ -35,6 +35,7 @@ def go_home():
         'state': 'alive and kicking'
     }
     return jsonify(response)
+
 
 @app.route('/start', methods=['POST','GET'])
 def start_test():
