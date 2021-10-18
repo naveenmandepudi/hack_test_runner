@@ -1,2 +1,2 @@
-worker: celery -A app.celery worker --loglevel=DEBUG
+worker: celery -A app worker --loglevel=DEBUG
 web: gunicorn app:app
