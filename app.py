@@ -29,6 +29,13 @@ def start_test_execution(self):
             'result': total}
 
 
+@app.route('/', methods=['GET'])
+def go_home():
+    response = {
+        'state': 'alive and kicking'
+    }
+    return jsonify(response)
+
 @app.route('/start', methods=['POST','GET'])
 def start_test():
     task = start_test_execution.apply_async()
