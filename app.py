@@ -1,9 +1,10 @@
 import os
 import random
 import time
+import redis
 from urllib.parse import urlparse
 
-from flask import Flask, request, render_template, session, flash, redirect, \
+from flask import Flask, request, session, flash, redirect, \
     url_for, jsonify
 from celery import Celery
 
