@@ -1,6 +1,8 @@
 import os
 import random
 import time
+from urllib.parse import urlparse
+
 from flask import Flask, request, render_template, session, flash, redirect, \
     url_for, jsonify
 from celery import Celery
@@ -9,8 +11,15 @@ app = Flask(__name__)
 
 # Celery configuration
 
-app.config['CELERY_BROKER_URL'] = os.getenv('REDISCLOUD_URL', 'redis://localhost:6379/0')
-app.config['CELERY_RESULT_BACKEND'] = os.getenv('REDISCLOUD_URL', 'redis://localhost:6379/0')
+redis_url = None
+
+
+if (os.getenv('REDISCLOUD_URL')):
+    redis_url = urlparse(os.getenv('REDISCLOUD_URL')).hostname
+
+app.config['CELERY_BROKER_URL'] = redis_url if os.getenv('REDISCLOUD_URL') else 'redis://localhost:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = redis_url if os.getenv('REDISCLOUD_URL') else 'redis://localhost:6379/0'
+
 
 # Initialize Celery
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], include=['app'])
