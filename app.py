@@ -13,7 +13,7 @@ app.config['CELERY_BROKER_URL'] = os.getenv('BROKER_URL', 'redis://localhost:637
 app.config['CELERY_RESULT_BACKEND'] = os.getenv('BROKER_URL', 'redis://localhost:6379/0')
 
 # Initialize Celery
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], include=['app'])
 celery.conf.update(app.config)
 
 
