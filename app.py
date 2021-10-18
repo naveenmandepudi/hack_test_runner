@@ -23,11 +23,11 @@ app.config['CELERY_RESULT_BACKEND'] = redis_url if os.getenv('REDISCLOUD_URL') e
 
 
 # Initialize Celery
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], include=['app'])
-celery.conf.update(app.config)
+celery_app = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], include=['app'])
+celery_app.conf.update(app.config)
 
 
-@celery.task(bind=True)
+@celery_app.task(bind=True)
 def start_test_execution(self):
     """Background task that runs a long function with progress reports."""
     print('Starting test')
