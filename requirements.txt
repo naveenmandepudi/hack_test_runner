@@ -1,4 +1,5 @@
+redis
 celery
 flask
-redis
 gunicorn
+requests
