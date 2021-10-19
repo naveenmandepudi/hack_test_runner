@@ -12,11 +12,11 @@ app = Flask(__name__)
 # Celery configuration
 
 app.config['CELERY_BROKER_URL'] = os.getenv('REDISCLOUD_URL') if os.getenv('REDISCLOUD_URL') else 'redis://localhost:6379/0'
-app.config['RESULT_BACKEND'] = os.getenv('REDISCLOUD_URL') if os.getenv('REDISCLOUD_URL') else 'redis://localhost:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = os.getenv('REDISCLOUD_URL') if os.getenv('REDISCLOUD_URL') else 'redis://localhost:6379/0'
 
 
 # Initialize Celery
-celery_app = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], backend=app.config['RESULT_BACKEND'], include=['app'])
+celery_app = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], backend=app.config['CELERY_RESULT_BACKEND'], include=['app'])
 celery_app.conf.update(app.config)
 
 
