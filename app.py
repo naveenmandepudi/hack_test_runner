@@ -11,18 +11,12 @@ app = Flask(__name__)
 
 # Celery configuration
 
-redis_url = None
-
-
-if (os.getenv('REDISCLOUD_URL')):
-    redis_url = urlparse(os.getenv('REDISCLOUD_URL')).hostname
-
 app.config['CELERY_BROKER_URL'] = os.getenv('REDISCLOUD_URL') if os.getenv('REDISCLOUD_URL') else 'redis://localhost:6379/0'
 app.config['RESULT_BACKEND'] = os.getenv('REDISCLOUD_URL') if os.getenv('REDISCLOUD_URL') else 'redis://localhost:6379/0'
 
 
 # Initialize Celery
-celery_app = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], include=['app'])
+celery_app = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], backend=app.config['RESULT_BACKEND'], include=['app'])
 celery_app.conf.update(app.config)
 
 
