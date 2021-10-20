@@ -18,3 +18,10 @@ six==1.16.0
 vine==5.0.0
 wcwidth==0.2.5
 Werkzeug==2.0.2
+
+requests==2.25.1
+pandas==1.2.4
+locust~=1.5.1
+configparser~=5.0.2
+numpy~=1.20.3
+PyYAML~=5.4.1

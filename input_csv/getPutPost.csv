@@ -1,0 +1,5 @@
+name,url,method,headers,postdata,weight,sla,responsevalidation
+T00_sf_getAccount,"/services/data/v49.0/sobjects/Account/${accountId}?fields=AccountNumber,BillingPostalCode",get,,,,,["AccountNumber"]="8113444"
+T01_get_1_post,https://jsonplaceholder.typicode.com/posts/1,get,{'Content-type': 'application/json; charset=UTF-8'},,1,0.5,welcome
+T02_put_1_post,https://jsonplaceholder.typicode.com/posts/1,put,{'Content-type': 'application/json; charset=UTF-8'},"{'title': 'foo','body': 'bar','userId': 1,'id':1}",1,,['id']=1
+T03_post_call,https://jsonplaceholder.typicode.com/posts,post,{'Content-type': 'application/json; charset=UTF-8'},"{'title': 'foo','body': 'bar','userId': 1}",1,,['title']="foo"

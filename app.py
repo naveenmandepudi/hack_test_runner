@@ -1,11 +1,15 @@
+import getopt
 import os
 import random
+import sys
 import time
 from urllib.parse import urlparse
 
 from flask import Flask, request, session, flash, redirect, \
     url_for, jsonify
 from celery import Celery
+
+import locustExtract
 
 app = Flask(__name__)
 
@@ -26,6 +30,10 @@ def start_test_execution(self):
     print('Starting test')
 
     total = random.randint(10, 50)
+
+    # Locust changes start
+    locustExtract.scriptentrypoint(yaml_location)
+    # Locust changes end
     print('executed long task')
     time.sleep(15)
     return {'current': 100, 'total': 100, 'status': 'Task completed!',
@@ -34,6 +42,7 @@ def start_test_execution(self):
 
 @app.route('/', methods=['GET'])
 def go_home():
+    locustExtract.scriptentrypoint(yaml_location)
     response = {
         'state': 'alive and kicking'
     }
@@ -81,4 +90,15 @@ def test_task_status(task_id):
 
 
 if __name__ == '__main__':
+    argumentList = sys.argv[1:]
+    options = "i:"
+    long_options = ["input="]
+    arguments, values = getopt.getopt(argumentList, options, long_options)
+    if len(arguments) == 0:
+        sys.exit("No arguments given hence terminated!!")
+    for currentArgument, currentValue in arguments:
+        if currentArgument in ("-i", "--input"):
+            yaml_location = currentValue
+        else:
+            sys.exit("[ERROR] Please provide valid config file!!")
     app.run(port=5000, debug=False)
