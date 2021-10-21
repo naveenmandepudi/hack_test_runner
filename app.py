@@ -17,54 +17,43 @@ app = Flask(__name__)
 
 # Celery configuration
 
-app.config['CELERY_BROKER_URL'] = os.getenv('REDISCLOUD_URL') if os.getenv('REDISCLOUD_URL') else 'redis://localhost:6379/0'
-app.config['CELERY_RESULT_BACKEND'] = os.getenv('REDISCLOUD_URL') if os.getenv('REDISCLOUD_URL') else 'redis://localhost:6379/0'
-
+app.config['CELERY_BROKER_URL'] = os.getenv('REDISCLOUD_URL') if os.getenv(
+    'REDISCLOUD_URL') else 'redis://localhost:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = os.getenv('REDISCLOUD_URL') if os.getenv(
+    'REDISCLOUD_URL') else 'redis://localhost:6379/0'
 
 # Initialize Celery
-celery_app = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], backend=app.config['CELERY_RESULT_BACKEND'], include=['app'])
+celery_app = Celery(app.name, broker=app.config['CELERY_BROKER_URL'], backend=app.config['CELERY_RESULT_BACKEND'],
+                    include=['app'])
 celery_app.conf.update(app.config)
 
-UPLOAD_FOLDER = '/Users/nmandepudi/Downloads/myrepo/test-runner'
+app.config['UPLOAD_FOLDER'] = os.getcwd()
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-global yaml_location
 
 @celery_app.task(bind=True)
-def start_test_execution(self):
+def start_test_execution(self,yaml_location):
     """Background task that runs a long function with progress reports."""
-    # print(os.path.abspath(yaml_location))
-
-    total = random.randint(10, 50)
-
-    # Locust changes start
-    locustExtract.scriptentrypoint(yaml_location=os.path.abspath(yaml_location))
-    # Locust changes end
+    locustExtract.scriptentrypoint(os.path.abspath(yaml_location))
     print('executed long task')
-    time.sleep(15)
-    return {'current': 100, 'total': 100, 'status': 'Task completed!',
-            'result': total}
+    return {'status': 'Task completed!'}
 
 
 @app.route('/', methods=['GET'])
 def go_home():
-    # locustExtract.scriptentrypoint(yaml_location)
     response = {
         'state': 'alive and kicking'
     }
     return jsonify(response)
 
 
-@app.route('/start', methods=['POST','GET'])
+@app.route('/start', methods=['POST', 'GET'])
 def start_test():
     if request.method == 'POST':
         f = request.files['file']
         f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
         yaml_location = f.filename
-        print(os.path.abspath(yaml_location))
         print('file uploaded successfully')
-    task = start_test_execution.apply_async()
+    task = start_test_execution.apply_async(args=[yaml_location])
     print('called test task method')
     return jsonify({}), 202, {'Location': url_for('test_task_status',
                                                   task_id=task.id)}

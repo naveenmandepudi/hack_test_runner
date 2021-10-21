@@ -163,10 +163,10 @@ def driver():
                     elif arg == "response_time":
                         data[arg] = round(kwargs[arg],2)
                 data["others"] = {}  # placeholder for future data
-                requests.post(url="#splunk_endpoint#",
-                              data=json.dumps(data),
-                              headers={"AUTHORIZATION": "Splunk #splunk_auth_key#"},
-                              verify=#splunk_cert_path#)
+                # requests.post(url="#splunk_endpoint#",
+                #               data=json.dumps(data),
+                #               headers={"AUTHORIZATION": "Splunk #splunk_auth_key#"},
+                #               verify=#splunk_cert_path#)
             
             def save_success_stats(self):
                 import csv
